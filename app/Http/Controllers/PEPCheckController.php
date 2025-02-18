@@ -109,12 +109,7 @@ class PEPCheckController extends Controller
         $user = Auth::user();
         $userFirstAndLastName = $user->first_name.' '.$user->last_name;
 
-        $response_token =  Http::withHeaders([
-            'client_id' => env('PEP_CLIENT_ID')
-        ])->withBasicAuth(env('PEP_USERNAME'), env('PEP_PASSWORD'))
-        ->post(env('PEP_AUTH_URL'));
-
-        $token = $response_token['access_token'];
+        
         $client = new Client();
 
         $export_data = [];
@@ -123,6 +118,13 @@ class PEPCheckController extends Controller
         foreach($array as $v) {
             $message;
             try {
+                $response_token =  Http::withHeaders([
+                    'client_id' => env('PEP_CLIENT_ID')
+                ])->withBasicAuth(env('PEP_USERNAME'), env('PEP_PASSWORD'))
+                ->post(env('PEP_AUTH_URL'));
+        
+                $token = $response_token['access_token'];
+                
                 $responseGet = $client->get(env('PEP_API_URL').$v['nik'], [
                     'headers' => [
                         'Authorization' => 'Bearer ' . $token,
