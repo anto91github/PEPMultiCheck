@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\ProfileUpdateRequest;
@@ -45,10 +46,14 @@ class UsersController extends Controller
      */
     public function store(User $user, StoreUserRequest $request)
     {
-        //For demo purposes only. When creating user or inviting a user
-        // you should create a generated random password and email it to the user
+        if($request['is_active']=='on'){
+            $request['status'] = 1;
+        } else {
+            $request['status'] = 0;
+        }
+
         $user->create(array_merge($request->validated(), [
-            'password' => 'test'
+            'password' => Hash::make($request->password)
         ]));
 
         return redirect()->route('users.index')
