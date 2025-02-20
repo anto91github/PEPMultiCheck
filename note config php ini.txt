@@ -1,0 +1,9 @@
+max_execution_time = 900
+
+enable:
+extension=fileinfo
+
+add:
+extension=php_pdo_sqlsrv_82_ts_x64
+extension=zip
+?mail.mixed_lf_and_crlf = Off?
