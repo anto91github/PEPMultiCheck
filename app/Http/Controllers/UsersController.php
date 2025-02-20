@@ -19,9 +19,13 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::latest()->paginate(10);
+        $keyword = $request->pencarian;
+        $users = User::latest()
+                ->where('name', 'LIKE', '%'.$keyword.'%')
+                ->orWhere('email', 'LIKE', '%'.$keyword.'%')
+                ->paginate(10);
 
         return view('users.index', compact('users'));
     }
@@ -99,11 +103,7 @@ class UsersController extends Controller
     {
         $data = $request->validated();
 
-        if($request['is_active']=='on'){
-            $data['status'] = 1;
-        } else {
-            $data['status'] = 0;
-        }
+        $status = $request->has('is_active') ? 1 : 0;
 
         // Hanya update password jika diisi
         if ($request->filled('password')) {
@@ -113,9 +113,11 @@ class UsersController extends Controller
             unset($data['password']);
         }
 
-        $user->update($data);
+        $dataToUpdate = array_merge($data, [
+            'status' => $status,
+        ]);
 
-        // $user->syncRoles($request->get('role'));
+        $user->update($dataToUpdate);
 
         return redirect()->route('users.index')
             ->withSuccess(__('User updated successfully.'));

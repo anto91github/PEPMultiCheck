@@ -1,3 +1,6 @@
+@php
+    use Illuminate\Support\Facades\Auth;
+@endphp
 @extends('layouts.app')
 
 @section('title')
@@ -11,14 +14,27 @@ User List
             <h5 class="card-title">Users</h5>
             <h6 class="card-subtitle mb-2 text-muted">Manage your users here.</h6>
 
+            <form action="{{ route('users.index') }}" method="GET">
+                @csrf
+                <div class="row">
+                    <div class="col-md-5">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" name="pencarian" id="searchInput" placeholder="Keyword" value="{{ request()->input('pencarian') }}">
+                            <button class="input-group-text btn btn-primary">Search</button>
+                        </div>
+                    </div>
+                </div>                
+            </form>
+
             <div class="mt-2">
                 @include('layouts.includes.messages')
             </div>
 
+            @if (Auth::check() && Auth::user()->email === 'super@admin.com')
             <div class="mb-2 text-end">
                 <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm float-right">Add user</a>
             </div>
-
+            @endif
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -47,7 +63,11 @@ User List
                             @endif                            
                         </td>
                         <!-- <td><a href="{{ route('users.show', $user->id) }}" class="btn btn-warning btn-sm">Show</a></td> -->
-                        <td><a href="{{ route('users.edit', $user->id) }}" class="btn btn-info btn-sm">Edit</a></td>
+                        <td>
+                        @if (Auth::check() && Auth::user()->email === 'super@admin.com')
+                            <a href="{{ route('users.edit', $user->id) }}" class="btn btn-info btn-sm">Edit</a>
+                        @endif
+                        </td>
                         <td>
                             <!-- <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:inline;">
                                 @csrf

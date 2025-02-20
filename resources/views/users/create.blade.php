@@ -57,7 +57,7 @@ Create User
                 </div>
 
                 <div class="mb-3">
-                    <label for="is_active" class="form-label">Is Active</label>
+                    <label for="status" class="form-label">Is Active</label>
                     <br/>
                     <label class="switch">
                         <input type="checkbox" class="toggle-active" name="is_active">
