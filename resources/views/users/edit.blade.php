@@ -20,7 +20,7 @@ Edit User
                             required>
 
                         @if ($errors->has('name'))
-                        <span class="text-danger text-left">{{ $errors->first('name') }}</span>
+                            <span class="text-danger text-left">{{ $errors->first('name') }}</span>
                         @endif
                     </div>
                     <div class="mb-3">
@@ -32,26 +32,31 @@ Edit User
                         @endif
                     </div>
                     <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input value="{{ $user->username }}" type="text" class="form-control" name="username"
-                            placeholder="Username" required>
-                        @if ($errors->has('username'))
-                        <span class="text-danger text-left">{{ $errors->first('username') }}</span>
-                        @endif
+                        <label for="password" class="form-label">Password</label>
+                            <input 
+                                type="password" 
+                                class="form-control" 
+                                id="password"
+                                name="password" 
+                                placeholder="Password">                                       
                     </div>
+
                     <div class="mb-3">
-                        <label for="role" class="form-label">Role</label>
-                        <select class="form-control" name="role" required>
-                            <option value="">Select role</option>
-                            @foreach($roles as $role)
-                            <option value="{{ $role->id }}" {{ in_array($role->name, $userRole)
-                                    ? 'selected'
-                                    : '' }}>{{ $role->name }}</option>
-                            @endforeach
-                        </select>
-                        @if ($errors->has('role'))
-                        <span class="text-danger text-left">{{ $errors->first('role') }}</span>
-                        @endif
+                        <label for="password_confirmation" class="form-label">Confirm Password</label>
+                        <input 
+                            type="password" 
+                            class="form-control" 
+                            name="password_confirmation" 
+                            placeholder="Confirm Password">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="is_active" class="form-label">Is Active</label>
+                        <br/>
+                        <label class="switch">
+                            <input type="checkbox" class="toggle-active" name="is_active" {{ $user->status == 1 ? 'checked' : '' }}>                            
+                            <span class="slider round"></span>
+                        </label>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Update user</button>
@@ -62,4 +67,50 @@ Edit User
     </div>
 
 </div>
+<style>
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+    </style>
 @endsection

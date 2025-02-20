@@ -46,14 +46,11 @@ class UsersController extends Controller
      */
     public function store(User $user, StoreUserRequest $request)
     {
-        if($request['is_active']=='on'){
-            $request['status'] = 1;
-        } else {
-            $request['status'] = 0;
-        }
+        $status = $request->has('is_active') ? 1 : 0;
 
         $user->create(array_merge($request->validated(), [
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'status' => $status
         ]));
 
         return redirect()->route('users.index')
@@ -100,9 +97,25 @@ class UsersController extends Controller
      */
     public function update(User $user, ProfileUpdateRequest $request)
     {
-        $user->update($request->validated());
+        $data = $request->validated();
 
-        $user->syncRoles($request->get('role'));
+        if($request['is_active']=='on'){
+            $data['status'] = 1;
+        } else {
+            $data['status'] = 0;
+        }
+
+        // Hanya update password jika diisi
+        if ($request->filled('password')) {
+            $data['password'] = bcrypt($request->password); // Hash password
+        } else {
+            // Jika password tidak diisi, hapus key password dari data
+            unset($data['password']);
+        }
+
+        $user->update($data);
+
+        // $user->syncRoles($request->get('role'));
 
         return redirect()->route('users.index')
             ->withSuccess(__('User updated successfully.'));
