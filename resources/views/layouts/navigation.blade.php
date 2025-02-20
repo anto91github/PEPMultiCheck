@@ -26,7 +26,7 @@
         </a>
     </li>
 
-    <li class="nav-item">
+    <!-- <li class="nav-item">
         <a class="nav-link {{ request()->is('roles*') ? 'active' : ''}}" href="{{ route('roles.index') }}">
             <svg class="nav-icon">
                 <use xlink:href="{{ asset('icons/coreui.svg#cil-group') }}"></use>
@@ -61,5 +61,5 @@
                 </a>
             </li>
         </ul>
-    </li>
+    </li> -->
 </ul>
