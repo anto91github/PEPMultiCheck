@@ -1,0 +1,37 @@
+token expired:
+eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRlIjoiMjAyNS0wMS0xMCIsInVzZXJJZCI6ImJjYV9zZWt1cml0YXMiLCJ0aW1lIjoiMDk6MzQ6MDcifQ.fYTfW6xyU1zrcvzwrD1YWSdQw2L5rWlVP7YXiX4V1CQ
+enhance loop:
+function checkPepBulk($arrayNik) {
+    $token = getToken(); // Dapatkan token awal
+    $new_resultArray = []; // Inisialisasi array untuk hasil baru
+    
+    foreach ($arrayNik as $nik) {
+        $result = checkSinglePep($token, $nik); // Cek dengan token saat ini        
+        
+        // Jika token tidak valid, dapatkan token baru dan coba lagi
+        if ($result['status'] == 401 || $result['message'] == 'Token Undefined') {
+            $token = getToken(); // Dapatkan token baru
+            $result = checkSinglePep($token, $nik); // Coba lagi dengan token baru
+            handleResult($result, $nik, $new_resultArray); // Tangani hasil dengan token baru
+        }
+		handleResult($result, $nik, $new_resultArray); // Tangani hasil
+    }
+}
+
+function checkSinglePep($token, $nik) {
+    // Menggunakan token yang diberikan untuk melakukan permintaan API
+    $response = HttpRequestGetApiResponse($token, $nik);
+    
+    return $response; // Kembalikan response yang berisi status dan data
+}
+
+function handleResult($result, $nik, &$new_resultArray) {
+    if ($result['status'] == 200) {
+        insertDb($result['data']);
+        insertLog("Success for NIK: " . $nik);
+        $new_resultArray[] = $result['data'];
+    } elseif ($result['status'] == 404) {
+        insertLog("Not found for NIK: " . $nik);
+        $new_resultArray[] = $nik;
+    }
+}
