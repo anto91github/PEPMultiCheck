@@ -107,7 +107,8 @@ class PEPCheckController extends Controller
 
     public function checkPEPBulk($array) {
         $user = Auth::user();
-        $userFirstAndLastName = $user->first_name.' '.$user->last_name;
+        // $userFirstAndLastName = $user->first_name.' '.$user->last_name;
+        $userFirstAndLastName = $user->name;
 
         
         $client = new Client();
