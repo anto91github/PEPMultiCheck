@@ -105,10 +105,37 @@ class PEPCheckController extends Controller
         // ]);
     }
 
+    public function getToken(){
+        $response_token =  Http::withHeaders([
+                            'client_id' => env('PEP_CLIENT_ID')
+                        ])->withBasicAuth(env('PEP_USERNAME'), env('PEP_PASSWORD'))
+                        ->post(env('PEP_AUTH_URL'));
+
+        return $response_token['access_token'];
+    }
+
+    public function checkSingleNik($token, $nik){
+        $responseGet = $client->get(env('PEP_API_URL').$nik, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+                'Accept' => 'application/json',
+            ],
+        ]);
+
+        // Jika token tidak valid, dapatkan token baru dan coba lagi
+        if ($responseGet['status'] == 401 || $responseGet['message'] == 'Token Undefined') {
+            $token = getToken(); // Dapatkan token baru
+            $result = checkSinglePep($token, $nik); // Coba lagi dengan token baru
+            handleResult($result, $nik, $new_resultArray); // Tangani hasil dengan token baru
+        }
+
+    }
+
     public function checkPEPBulk($array) {
         $user = Auth::user();
         $userFirstAndLastName = $user->first_name.' '.$user->last_name;
 
+        $token = $this->getToken();
         
         $client = new Client();
 
@@ -116,21 +143,9 @@ class PEPCheckController extends Controller
         set_time_limit(900);
 
         foreach($array as $v) {
-            $message;
             try {
-                $response_token =  Http::withHeaders([
-                    'client_id' => env('PEP_CLIENT_ID')
-                ])->withBasicAuth(env('PEP_USERNAME'), env('PEP_PASSWORD'))
-                ->post(env('PEP_AUTH_URL'));
-        
-                $token = $response_token['access_token'];
-                
-                $responseGet = $client->get(env('PEP_API_URL').$v['nik'], [
-                    'headers' => [
-                        'Authorization' => 'Bearer ' . $token,
-                        'Accept' => 'application/json',
-                    ],
-                ]);
+                $this->checkSingleNik($token, $v['nik']);
+
                 if ($responseGet->getStatusCode() === 200) { // PEP Found
                     $data = json_decode($responseGet->getBody(), true);
                     
