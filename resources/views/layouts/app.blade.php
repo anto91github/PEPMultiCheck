@@ -18,6 +18,7 @@
     @vite('resources/sass/app.scss')
     @stack('after-styles')
     <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>

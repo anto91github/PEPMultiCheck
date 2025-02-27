@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\LogUsage;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -23,7 +25,31 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $totalCount = LogUsage::count();
+        $totalFound = LogUsage::where('status', 'DATA FOUND')->count();
+        $latestLogUsage = LogUsage::orderBy('created_at', 'desc')->first();
+        $latestDateUsage = $latestLogUsage->created_at;
+
+        $year = now()->year;
+        $data = [];
+
+        for ($month = 1; $month <= 12; $month++) {
+            $count = LogUsage::whereYear('created_at', $year)
+                ->whereMonth('created_at', $month)
+                ->where('status', 'DATA FOUND')
+                ->count();
+
+            $data[] = $count;
+        }
+        
+        return view('home', 
+        [
+            'totalCount' => $totalCount,
+            'totalFound' => $totalFound,
+            'latestDateUsage' => Carbon::parse($latestDateUsage)->format('d-m-Y H:i:s'),
+            'data' => $data,
+            'year' => $year
+        ]);
     }
 
     public function about()
