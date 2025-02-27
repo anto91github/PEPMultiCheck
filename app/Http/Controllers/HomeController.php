@@ -27,6 +27,8 @@ class HomeController extends Controller
     {
         $totalCount = LogUsage::count();
         $totalFound = LogUsage::where('status', 'DATA FOUND')->count();
+        $totalNotFound = LogUsage::where('status', 'NOT FOUND')->count();
+        $totalOthers = LogUsage::whereNotIn('status', ['NOT FOUND', 'DATA FOUND'])->count();
         $latestLogUsage = LogUsage::orderBy('created_at', 'desc')->first();
         $latestDateUsage = $latestLogUsage->created_at;
 
@@ -46,6 +48,8 @@ class HomeController extends Controller
         [
             'totalCount' => $totalCount,
             'totalFound' => $totalFound,
+            'totalNotFound' => $totalNotFound,
+            'totalOthers' => $totalOthers,
             'latestDateUsage' => Carbon::parse($latestDateUsage)->format('d-m-Y H:i:s'),
             'data' => $data,
             'year' => $year

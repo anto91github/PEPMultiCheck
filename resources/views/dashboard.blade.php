@@ -16,21 +16,21 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Total Pengecekan Nasabah</td>
-                                        <td><b>{{$totalCount}}</b></td>
-                                    </tr>   
-                                    <tr>
                                         <td>Data PEP Found</td>
-                                        <td><b>tambah where date today {{$totalFound}}</b></td>
+                                        <td><b>{{number_format($totalFound)}}</b></td>
                                     </tr>  
                                     <tr>
                                         <td>Data PEP NOT Found</td>
-                                        <td><b>{{$totalFound}}</b></td>
+                                        <td><b>{{number_format($totalNotFound)}}</b></td>
                                     </tr> 
                                     <tr>
                                         <td>Error / lainnya</td>
-                                        <td><b>{{$totalFound}}</b></td>
-                                    </tr>                                      
+                                        <td><b>{{number_format($totalOthers)}}</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Total Pengecekan Nasabah</b></td>
+                                        <td><b>{{number_format($totalCount)}}</b></td>
+                                    </tr>                                       
                                 </tbody>
                             </table>
 
