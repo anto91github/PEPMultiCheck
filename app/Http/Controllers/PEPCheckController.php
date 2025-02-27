@@ -117,6 +117,7 @@ class PEPCheckController extends Controller
         set_time_limit(900);
 
         foreach($array as $v) {
+            $new_result = [];
             $message;
             try {
                 $response_token =  Http::withHeaders([
@@ -198,7 +199,9 @@ class PEPCheckController extends Controller
                 }
             }
             //push result into array
-            array_push($export_data, $new_result);
+            if (!empty($new_result)) {
+                array_push($export_data, $new_result);
+            }
         }
         
         /*$dummyClient = new Client();
